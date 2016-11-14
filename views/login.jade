@@ -1,0 +1,55 @@
+extends base
+
+block content
+    div(class="container-fluid")
+        div(class="row" style="margin-top: 60px;")
+            div(class="col s12 m8 offset-m2 l6 offset-l3")    
+                div(class="card")
+                    div(class="card-content")
+                        span(class="card-title") Login
+                        
+                        div
+                            input(type="text" placeholder="Usuario" id="user")
+                        
+                            button(type="button" class="btn indigo" id="btnLogin") Login
+                            
+                            button(type="button" class="btn indigo" id="btnGetArts") getArts
+
+
+block js
+    script.
+        $(document.body).on("click", "#btnLogin", function(e){
+            if($("#user").val().length<=0){
+                Materialize.toast("Ingrese su usuario", 2000);
+            }else{
+                $.ajax({
+                    url: "/login",
+                    type: "post",
+                    data: {user: $("#user").val()},
+                    cache: false,
+                    success: function(data){
+                        console.log("Conexion a chat satisfactoria");
+                        console.log(data);
+                        if(data.status=="success"){
+                            window.location.href = "/chat";
+                        }
+                    },
+                    error: function(err){console.log(err);},
+                });
+            }
+        });
+        
+        
+        $(document.body).on("click", "#btnGetArts", function(e){
+            $.ajax({
+                url: "http://bioingcalculo.udea.edu.co/apirepos/articles",
+                type: "get",
+                data: {},
+                cache: false,
+                success: function(data){
+                    console.log("Conexion a API satisfactoria");
+                    console.log(data);
+                },
+                error: function(err){console.log(err);},
+            });
+        });

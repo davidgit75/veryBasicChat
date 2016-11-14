@@ -1,0 +1,35 @@
+extends base
+
+
+block content
+    div(class="container-fluid")
+        div(class="row" style="margin-top: 60px;")
+            div(class="col s12 m8 offset-m2 l6 offset-l3")   
+                h4 CHAT
+                a(href="/logout" id="btnLogout" class="btn red") Salir
+                
+            div(class="col s12 m8 offset-m2 l6 offset-l3")
+                textarea(id="messages" class="materialize-textarea" style="overflow-y: scroll; max-height: 200px; min-height: 200px;")
+                
+                input(type="text" id="newMessage" placeholder="Escriba nuevo mensaje")
+                
+                button(class="btn green" id="btnEnviar") Enviar
+    
+block js
+    script.
+        var socket = io.connect();
+        
+        socket.on("newMessage", function(data){
+            console.log("NEW MESSAGE");
+            console.log(data);
+            $("#messages").append(" " + data.message + "\n");
+        });
+        
+        $(document.body).on("click", "#btnEnviar", function(e){
+            if($("#newMessage").val().length<=0){
+                Materialize.toast("Escriba nuevo mensaje antes de enviar", 2000);
+            }else{
+                socket.emit("newMessage", {message: $("#newMessage").val()});
+                $("#newMessage").val("");
+            }
+        });
